@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: "05.create_card_lock_request.yml"
+      author: "Ivan Eremin"
+      changes:
+        - createTable:
+            tableName: card_lock_request
+            remarks: "Данные запроса пользователя на блокировку карты"
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  remarks: "Идентификатор запроса"
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: card_id
+                  type: UUID
+                  remarks: "Идентификатор карты"
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar
+                  remarks: "Состояние исполнения запроса"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_time
+                  type: timestamp
+                  remarks: "Время создания"
+              - column:
+                  name: create_user
+                  type: varchar
+                  remarks: "Пользователь, который создал запись"
+              - column:
+                  name: last_update_time
+                  type: timestamp
+                  remarks: "Время последнего изменения"
+              - column:
+                  name: last_update_user
+                  type: varchar
+                  remarks: "Пользователь, внесший последние изменения"
+              - column:
+                  name: deleted
+                  type: boolean
+                  remarks: "Признак удаления"
+                  defaultValue: "false"
+                  constraints:
+                    nullable: false

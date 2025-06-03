@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: "04.create_app_user_role.yml"
+      author: "Ivan Eremin"
+      changes:
+        - createTable:
+            tableName: app_user_role
+            remarks: "Отношение для связи M:N app_user и role"
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+                  remarks: "Идентификатор пользователя"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: UUID
+                  remarks: "Идентификатор роли"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_time
+                  type: timestamp
+                  remarks: "Время создания"
+              - column:
+                  name: create_user
+                  type: varchar
+                  remarks: "Пользователь, который создал запись"
+              - column:
+                  name: last_update_time
+                  type: timestamp
+                  remarks: "Время последнего изменения"
+              - column:
+                  name: last_update_user
+                  type: varchar
+                  remarks: "Пользователь, внесший последние изменения"
+              - column:
+                  name: deleted
+                  type: boolean
+                  remarks: "Признак удаления записи"
+                  defaultValue: "false"
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: app_user_role
+            columnNames: user_id, role_id
+            constraintName: app_user_role_pkey
