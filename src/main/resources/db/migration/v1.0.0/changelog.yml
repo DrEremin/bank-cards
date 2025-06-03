@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: release/1.0.0
+      author: "Eremin IN"
+      changes:
+        - tagDatabase:
+            tag: release/1.0.0
+  - include:
+      file: 01.create_card.yml
+      relativeToChangeLogFile: true
+  - include:
+      file: 02.create_app_user.yml
+      relativeToChangeLogFile: true
+  - include:
+      file: 03.create_role.yml
+      relativeToChangeLogFile: true
+  - include:
+      file: 04.create_app_user_role.yml
+      relativeToChangeLogFile: true
+  - include:
+      file: 05.create_card_lock_request.yml
+      relativeToChangeLogFile: true

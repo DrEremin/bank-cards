@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: "02.create_app_user.yml"
+      author: "Ivan Eremin"
+      changes:
+        - createTable:
+            tableName: app_user
+            remarks: "Данные пользователя"
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_name
+                  type: varchar
+                  remarks: "Ник пользователя"
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: encoded_password
+                  type: varchar
+                  remarks: "Зашифрованный пароль пользователя"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_time
+                  type: timestamp
+                  remarks: "Время создания"
+              - column:
+                  name: create_user
+                  type: varchar
+                  remarks: "Пользователь, который создал запись"
+              - column:
+                  name: last_update_time
+                  type: timestamp
+                  remarks: "Время последнего изменения"
+              - column:
+                  name: last_update_user
+                  type: varchar
+                  remarks: "Пользователь, внесший последние изменения"
+              - column:
+                  name: deleted
+                  type: boolean
+                  remarks: "Признак удаления записи"
+                  defaultValue: "false"
+                  constraints:
+                    nullable: false
