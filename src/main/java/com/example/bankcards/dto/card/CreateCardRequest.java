@@ -2,8 +2,6 @@ package com.example.bankcards.dto.card;
 
 import com.example.bankcards.util.validation.ValidUUID;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

@@ -1,7 +1,6 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.AbstractTest;
-import com.example.bankcards.dto.card.FilterCardRequest;
 import com.example.bankcards.dto.common.PageableRequest;
 import com.example.bankcards.dto.common.SortRequest;
 import com.example.bankcards.dto.user.CreateUserRequest;
