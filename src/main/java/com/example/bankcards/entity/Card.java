@@ -8,16 +8,13 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Этот класс является сущностью БД и представляет данные банковской карты
- */
 @Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Card extends AuditableEntity {
+public class Card extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,11 +28,11 @@ public class Card extends AuditableEntity {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private AppUser owner;
+    private User owner;
     /**
      * Время окончания срока действия карты
      */
-    private LocalDateTime endTime;
+    private LocalDateTime expiredTime;
     /**
      * Статус активности карты
      */

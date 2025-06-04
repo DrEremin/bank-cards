@@ -3,7 +3,7 @@ package com.example.bankcards.entity;
 /**
  * Варианты состояний запроса на блокировку карты
  */
-public enum CardLockRequestStatus {
+public enum OrderForLockStatus {
 
     PENDING,
     CANCELLED,

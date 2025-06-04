@@ -6,16 +6,13 @@ import lombok.*;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Этот класс является сущностью БД и представляет данные роли
- */
 @Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Role extends AuditableEntity {
+public class Role extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,7 +20,8 @@ public class Role extends AuditableEntity {
     /**
      * Имя роли
      */
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    private RoleName roleName;
 
     @Override
     public boolean equals(Object object) {

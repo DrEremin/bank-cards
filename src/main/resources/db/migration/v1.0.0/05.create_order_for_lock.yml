@@ -1,28 +1,29 @@
 databaseChangeLog:
   - changeSet:
-      id: "02.create_app_user.yml"
+      id: "05.create_order_for_lock.yml"
       author: "Ivan Eremin"
       changes:
         - createTable:
-            tableName: app_user
-            remarks: "Данные пользователя"
+            tableName: order_for_lock
+            remarks: "Данные заявки пользователя на блокировку карты"
             columns:
               - column:
                   name: id
                   type: UUID
+                  remarks: "Идентификатор заявки"
                   constraints:
                     primaryKey: true
               - column:
-                  name: user_name
-                  type: varchar
-                  remarks: "Ник пользователя"
+                  name: card_id
+                  type: UUID
+                  remarks: "Идентификатор карты"
                   constraints:
                     unique: true
                     nullable: false
               - column:
-                  name: encoded_password
+                  name: status
                   type: varchar
-                  remarks: "Зашифрованный пароль пользователя"
+                  remarks: "Состояние исполнения заявки"
                   constraints:
                     nullable: false
               - column:
@@ -44,7 +45,7 @@ databaseChangeLog:
               - column:
                   name: deleted
                   type: boolean
-                  remarks: "Признак удаления записи"
+                  remarks: "Признак удаления"
                   defaultValue: "false"
                   constraints:
                     nullable: false

@@ -13,7 +13,6 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
     @Query("""
         FROM Role r
         WHERE r.roleName IN (:roleNames)
-        """
-    )
+        """)
     Set<Role> findByRoleNames(List<String> roleNames);
 }

@@ -6,16 +6,13 @@ import lombok.*;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Этот класс является сущностью БД и представляет данные запроса на блокировку карты
- */
 @Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class CardLockRequest extends AuditableEntity {
+public class OrderForLock extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,13 +25,13 @@ public class CardLockRequest extends AuditableEntity {
     private Card card;
 
     @Enumerated(EnumType.STRING)
-    private CardLockRequestStatus status;
+    private OrderForLockStatus status;
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        CardLockRequest that = (CardLockRequest) object;
+        OrderForLock that = (OrderForLock) object;
         return Objects.equals(id, that.id);
     }
 

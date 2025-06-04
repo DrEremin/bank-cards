@@ -1,22 +1,28 @@
 databaseChangeLog:
   - changeSet:
-      id: "04.create_app_user_role.yml"
+      id: "02.create_users.yml"
       author: "Ivan Eremin"
       changes:
         - createTable:
-            tableName: app_user_role
-            remarks: "Отношение для связи M:N app_user и role"
+            tableName: users
+            remarks: "Данные пользователя"
             columns:
               - column:
-                  name: user_id
+                  name: id
                   type: UUID
-                  remarks: "Идентификатор пользователя"
                   constraints:
+                    primaryKey: true
+              - column:
+                  name: user_name
+                  type: varchar
+                  remarks: "Ник пользователя"
+                  constraints:
+                    unique: true
                     nullable: false
               - column:
-                  name: role_id
-                  type: UUID
-                  remarks: "Идентификатор роли"
+                  name: encoded_password
+                  type: varchar
+                  remarks: "Зашифрованный пароль пользователя"
                   constraints:
                     nullable: false
               - column:
@@ -42,7 +48,3 @@ databaseChangeLog:
                   defaultValue: "false"
                   constraints:
                     nullable: false
-        - addPrimaryKey:
-            tableName: app_user_role
-            columnNames: user_id, role_id
-            constraintName: app_user_role_pkey

@@ -1,46 +1,24 @@
 databaseChangeLog:
   - changeSet:
-      id: "01.create_card.yml"
+      id: "04.create_users_role.yml"
       author: "Ivan Eremin"
       changes:
         - createTable:
-            tableName: card
-            remarks: "Данные банковской карты"
+            tableName: users_role
+            remarks: "Отношение для связи M:N app_user и role"
             columns:
-              - column:
-                  name: id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: encoded_number
-                  type: varchar
-                  remarks: "Зашифрованный номер карты"
-                  constraints:
-                    unique: true
-                    nullable: false
               - column:
                   name: user_id
                   type: UUID
+                  remarks: "Идентификатор пользователя"
                   constraints:
                     nullable: false
               - column:
-                  name: expired_time
-                  type: timestamp
-                  remarks: "Время окончания срока действия карты"
+                  name: role_id
+                  type: UUID
+                  remarks: "Идентификатор роли"
                   constraints:
                     nullable: false
-              - column:
-                  name: status
-                  type: varchar
-                  remarks: "Статус активности карты"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: balance
-                  type: numeric(20, 2)
-                  remarks: "Баланс карты"
-                  defaultValue: "0.00"
               - column:
                   name: create_time
                   type: timestamp
@@ -64,3 +42,7 @@ databaseChangeLog:
                   defaultValue: "false"
                   constraints:
                     nullable: false
+        - addPrimaryKey:
+            tableName: users_role
+            columnNames: user_id, role_id
+            constraintName: users_role_pkey
