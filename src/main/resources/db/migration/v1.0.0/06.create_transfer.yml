@@ -1,29 +1,33 @@
 databaseChangeLog:
   - changeSet:
-      id: "05.create_card_lock_request.yml"
+      id: "06.create_transfer.yml"
       author: "Ivan Eremin"
       changes:
         - createTable:
-            tableName: card_lock_request
-            remarks: "Данные запроса пользователя на блокировку карты"
+            tableName: transfer
+            remarks: "Данные перевода между картами"
             columns:
               - column:
                   name: id
                   type: UUID
-                  remarks: "Идентификатор запроса"
                   constraints:
                     primaryKey: true
               - column:
-                  name: card_id
+                  name: source_card_id
                   type: UUID
-                  remarks: "Идентификатор карты"
+                  remarks: "Идентификатор карты-источника"
                   constraints:
-                    unique: true
                     nullable: false
               - column:
-                  name: status
-                  type: varchar
-                  remarks: "Состояние исполнения запроса"
+                  name: target_card_id
+                  type: UUID
+                  remarks: "Идентификатор карты назначения"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: numeric(20, 2)
+                  remarks: "Сумма перевода"
                   constraints:
                     nullable: false
               - column:
@@ -45,7 +49,7 @@ databaseChangeLog:
               - column:
                   name: deleted
                   type: boolean
-                  remarks: "Признак удаления"
+                  remarks: "Признак удаления записи"
                   defaultValue: "false"
                   constraints:
                     nullable: false

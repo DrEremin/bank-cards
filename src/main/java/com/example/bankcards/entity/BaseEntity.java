@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
-public class AuditableEntity {
+public class BaseEntity {
 
     public static final String DEFAULT_DB_USER = "bank-cards";
 

@@ -9,14 +9,17 @@ databaseChangeLog:
       file: 01.create_card.yml
       relativeToChangeLogFile: true
   - include:
-      file: 02.create_app_user.yml
+      file: 02.create_users.yml
       relativeToChangeLogFile: true
   - include:
       file: 03.create_role.yml
       relativeToChangeLogFile: true
   - include:
-      file: 04.create_app_user_role.yml
+      file: 04.create_users_role.yml
       relativeToChangeLogFile: true
   - include:
-      file: 05.create_card_lock_request.yml
+      file: 05.create_order_for_lock.yml
+      relativeToChangeLogFile: true
+  - include:
+      file: 06.create_transfer.yml
       relativeToChangeLogFile: true

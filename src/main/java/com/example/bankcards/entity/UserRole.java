@@ -1,9 +1,6 @@
 package com.example.bankcards.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
@@ -19,15 +16,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class AppUserRole extends AuditableEntity {
+@Table(name = "users_role")
+public class UserRole extends BaseEntity {
 
     @EmbeddedId
-    private AppUserRoleId id;
+    private UserRoleId id;
 
     @Getter
     @Setter
     @Embeddable
-    public static class AppUserRoleId implements Serializable {
+    public static class UserRoleId implements Serializable {
 
         @Column(name = "user_id")
         private UUID userId;
@@ -39,7 +37,7 @@ public class AppUserRole extends AuditableEntity {
         public boolean equals(Object object) {
             if (this == object) return true;
             if (object == null || getClass() != object.getClass()) return false;
-            AppUserRoleId that = (AppUserRoleId) object;
+            UserRoleId that = (UserRoleId) object;
             return Objects.equals(userId, that.userId) && Objects.equals(roleId, that.roleId);
         }
 

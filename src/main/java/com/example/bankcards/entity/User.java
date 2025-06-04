@@ -7,16 +7,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Этот класс является сущностью БД и представляет данные пользователя
- */
 @Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class AppUser extends AuditableEntity {
+@Table(name = "users")
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,7 +33,7 @@ public class AppUser extends AuditableEntity {
      */
     @ManyToMany
     @JoinTable(
-            name = "app_user_role",
+            name = "users_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -50,8 +48,8 @@ public class AppUser extends AuditableEntity {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        AppUser appUser = (AppUser) object;
-        return Objects.equals(id, appUser.id);
+        User user = (User) object;
+        return Objects.equals(id, user.id);
     }
 
     @Override
