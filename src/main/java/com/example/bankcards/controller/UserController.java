@@ -10,6 +10,7 @@ import com.example.bankcards.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(code = HttpStatus.CREATED)
     public CommonResponse<UserResponse> createUser(@RequestBody @Valid CommonRequest<CreateUserRequest> request) {
         UserResponse response = userService.createUser(request.getBody());
@@ -34,6 +36,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public CommonResponse<Void> deleteUser(@PathVariable("id") UUID id) {
         userService.deleteUser(id);
@@ -44,6 +47,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public CommonResponse<UserResponse> updateUser(
             @PathVariable("id") UUID id,
             @RequestBody @Valid CommonRequest<UpdateUserRequest> request) {
@@ -56,6 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/filter")
+    @PreAuthorize("hasRole('ADMIN')")
     public CommonResponse<List<UserResponse>> findByFilter(
             @RequestBody @Valid CommonRequest<FilterUserRequest> request) {
         List<UserResponse> responses = userService.findByFilter(request.getBody());
@@ -67,6 +72,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public CommonResponse<UserResponse> getUser(@PathVariable("id") UUID id) {
         UserResponse response = userService.getUser(id);
 

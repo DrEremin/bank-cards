@@ -1,6 +1,7 @@
 package com.example.bankcards.service;
 
 import com.example.bankcards.dto.card.*;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +15,8 @@ public interface CardService {
     void deleteCard(UUID cardId);
 
     CardResponse findById(UUID cardId);
+
+    List<CardResponse> findAllByUserId(UUID userId, Pageable pageable);
 
     List<CardResponse> findByFilter(FilterCardRequest request);
 

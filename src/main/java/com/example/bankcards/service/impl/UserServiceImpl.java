@@ -17,6 +17,7 @@ import com.example.bankcards.util.mapper.PageableMapper;
 import com.example.bankcards.util.mapper.UserResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final CardRepository cardRepository;
     private final UserRoleRepository userRoleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -116,7 +118,7 @@ public class UserServiceImpl implements UserService {
 
         return User.builder()
                 .userName(userName)
-                .encodedPassword(password)
+                .encodedPassword(passwordEncoder.encode(password))
                 .roles(roles)
                 .build();
     }

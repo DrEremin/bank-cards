@@ -34,9 +34,16 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
 
     @Query("""
         DELETE FROM Card
-        WHERE :id IS NOT NULL 
+        WHERE :id IS NOT NULL
             AND id = :id
         """)
     @Modifying
     void deleteById(@Param("id") UUID id);
+
+    @Query("""
+        FROM Card card
+        JOIN FETCH card.owner
+        WHERE (:ownerId IS NOT NULL AND card.owner.id = :ownerId)
+        """)
+    List<Card> findAllByUserId(@Param("ownerId") UUID ownerId, Pageable pageable);
 }

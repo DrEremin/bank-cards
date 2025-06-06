@@ -10,6 +10,7 @@ import com.example.bankcards.service.OrderForLockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class OrderForLockController {
     private final OrderForLockService orderForLockService;
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(code = HttpStatus.CREATED)
     public CommonResponse<OrderForLockResponse> createOrderForLock(
             @RequestBody @Valid CommonRequest<CreateOrderForLockRequest> request) {
@@ -35,6 +37,7 @@ public class OrderForLockController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public CommonResponse<OrderForLockResponse> updateOrderForLock(
             @PathVariable("id") UUID id,
             @RequestBody @Valid CommonRequest<UpdateOrderForLockRequest> request) {
@@ -47,6 +50,7 @@ public class OrderForLockController {
     }
 
     @PostMapping("/filter")
+    @PreAuthorize("hasRole('ADMIN')")
     public CommonResponse<List<OrderForLockResponse>> findByFilter(
             @RequestBody @Valid CommonRequest<FilterOrderForLockRequest> request) {
         List<OrderForLockResponse> responses = orderForLockService.findByFilter(request.getBody());
@@ -58,6 +62,7 @@ public class OrderForLockController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public CommonResponse<OrderForLockResponse> getOrderForLock(@PathVariable("id") UUID id) {
         OrderForLockResponse response = orderForLockService.getOrderForLock(id);
 

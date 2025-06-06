@@ -1,12 +1,11 @@
-package com.example.bankcards.controller;
+package com.example.bankcards.exception;
 
 import com.example.bankcards.dto.common.CommonResponse;
 import com.example.bankcards.dto.common.ValidationError;
-import com.example.bankcards.exception.BankCardsException;
-import com.example.bankcards.exception.EntityNotFoundException;
-import com.example.bankcards.exception.UniquenessViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -80,6 +79,28 @@ public class BankCardsExceptionHandler {
         return CommonResponse.builder()
                 .id(UUID.randomUUID())
                 .errorMessage("Ошибка валидации: " + e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public CommonResponse<?> handleBadCredentialsException(BadCredentialsException e) {
+        log.warn("Ошибка подтверждения данных: {}", e.getMessage(), e);
+
+        return CommonResponse.builder()
+                .id(UUID.randomUUID())
+                .errorMessage("Ошибка подтверждения данных: " + e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public CommonResponse<?> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+        log.warn("Ошибка аутентификации/авторизации: {}", e.getMessage());
+
+        return CommonResponse.builder()
+                .id(UUID.randomUUID())
+                .errorMessage("Ошибка аутентификации/авторизации: " + e.getMessage())
                 .build();
     }
 }
