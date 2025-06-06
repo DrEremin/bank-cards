@@ -103,18 +103,12 @@ class UserControllerTest extends AbstractTest {
 
     private static Stream<Arguments> updateUser_invalidRequest_methodSource() {
         return Stream.of(
-                Arguments.of(new UpdateUserRequest(null, List.of(new RoleNameRequest(roleAdmin))),
-                        "Пароль пользователя не должен быть пустым или null"),
                 Arguments.of(new UpdateUserRequest("       ", List.of(new RoleNameRequest(roleAdmin))),
-                        "Пароль пользователя не должен быть пустым или null"),
+                        "Пароль пользователя не может быть пустым"),
                 Arguments.of(new UpdateUserRequest("xyz", List.of(new RoleNameRequest(roleAdmin))),
                         "Недопустимая длина пароля пользователя"),
                 Arguments.of(new UpdateUserRequest("****************", List.of(new RoleNameRequest(roleAdmin))),
                         "Недопустимая длина пароля пользователя"),
-                Arguments.of(new UpdateUserRequest(testPassword, null),
-                        "Список ролей пользователя не должен быть пустым или null"),
-                Arguments.of(new UpdateUserRequest(testPassword, List.of()),
-                        "Список ролей пользователя не должен быть пустым или null"),
                 Arguments.of(new UpdateUserRequest(testPassword, List.of(new RoleNameRequest(null))),
                         "Имя роли не должно быть null"),
                 Arguments.of(new UpdateUserRequest(testPassword, List.of(new RoleNameRequest("xyz"))),

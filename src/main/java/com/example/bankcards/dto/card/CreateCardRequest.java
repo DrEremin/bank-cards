@@ -17,6 +17,7 @@ public class CreateCardRequest {
     private String ownerId;
 
     @Valid
+    @NotNull(message = "Срок действия карты не должен быть null")
     private ValidThruRequest validThru;
 
 }

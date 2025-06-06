@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Card extends BaseEntity {
+public class Card extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

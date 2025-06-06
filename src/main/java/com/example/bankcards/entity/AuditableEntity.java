@@ -7,13 +7,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * Этот класс добавляет поля атрибутов для аудирования записей в БД
- */
 @Getter
 @Setter
 @MappedSuperclass
-public class BaseEntity {
+public class AuditableEntity {
 
     public static final String DEFAULT_DB_USER = "bank-cards";
 
@@ -33,10 +30,6 @@ public class BaseEntity {
      * Имя пользователя, сделавшего последние изменения
      */
     private String lastUpdateUser;
-    /**
-     * Признак удаления записи
-     */
-    private Boolean deleted;
 
     @PrePersist
     public void prePersist() {
@@ -45,7 +38,6 @@ public class BaseEntity {
         this.lastUpdateTime = now;
         this.createUser = DEFAULT_DB_USER;
         this.lastUpdateUser = DEFAULT_DB_USER;
-        this.deleted = false;
     }
 
     @PreUpdate

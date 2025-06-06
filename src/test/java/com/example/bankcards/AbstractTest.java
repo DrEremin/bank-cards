@@ -1,5 +1,10 @@
 package com.example.bankcards;
 
+import com.example.bankcards.repository.CardRepository;
+import com.example.bankcards.repository.OrderForLockRepository;
+import com.example.bankcards.repository.UserRepository;
+import com.example.bankcards.service.CardService;
+import com.example.bankcards.util.property.ValidPeriodProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -24,6 +30,21 @@ public abstract class AbstractTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
+    @MockitoBean
+    protected ValidPeriodProperty mockValidPeriodProperty;
+
+    @Autowired
+    protected CardService cardService;
+
+    @MockitoBean
+    protected CardRepository mockCardRepository;
+
+    @MockitoBean
+    protected UserRepository mockUserRepository;
+
+    @MockitoBean
+    protected OrderForLockRepository mockOrderForLockRepository;
 
     @BeforeAll
     static void beforeAll() {

@@ -13,8 +13,7 @@ public class CardResponse {
 
     private String id;
     private String number;
-    private String userId;
+    private String ownerId;
     private String status;
-    private String balance;
     private ValidThruResponse validThru;
 }

@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: "07.create_indexes.yml"
+      author: "Ivan Eremin"
+      changes:
+        - createIndex:
+            indexName: card_user_id_idx
+            tableName: card
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: order_for_lock_card_id_idx
+            tableName: order_for_lock
+            columns:
+              - column:
+                  name: card_id

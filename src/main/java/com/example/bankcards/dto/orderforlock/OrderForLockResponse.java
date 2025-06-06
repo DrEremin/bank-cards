@@ -11,7 +11,6 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderForLockResponse {
 
-    private String cardId;
-    private String cardNumber;
-    private String cardLockStatus;
+    private String id;
+    private String status;
 }

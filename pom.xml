@@ -6,7 +6,7 @@
 
     <groupId>com.example</groupId>
     <artifactId>bank-cards</artifactId>
-    <version>1.0.0-RC2</version>
+    <version>1.0.0-RC3</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -51,6 +51,18 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.7.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.17.0</version>
         </dependency>
 
         <dependency>

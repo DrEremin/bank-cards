@@ -34,7 +34,7 @@ class OrderForLockControllerTest extends AbstractTest {
         var commonRequest = new CommonRequest<>(request);
         var requestBody = objectMapper.writeValueAsString(commonRequest);
 
-        mockMvc.perform(post("/api/v1/orders-for-locks")
+        mockMvc.perform(post("/api/v1/lock-orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
@@ -50,7 +50,7 @@ class OrderForLockControllerTest extends AbstractTest {
         var commonRequest = new CommonRequest<>(request);
         var requestBody = objectMapper.writeValueAsString(commonRequest);
 
-        mockMvc.perform(patch("/api/v1/orders-for-locks/" + id)
+        mockMvc.perform(patch("/api/v1/lock-orders/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
@@ -66,7 +66,7 @@ class OrderForLockControllerTest extends AbstractTest {
         var commonRequest = new CommonRequest<>(request);
         var requestBody = objectMapper.writeValueAsString(commonRequest);
 
-        mockMvc.perform(post("/api/v1/orders-for-locks/filter")
+        mockMvc.perform(post("/api/v1/lock-orders/filter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
@@ -85,9 +85,9 @@ class OrderForLockControllerTest extends AbstractTest {
     private static Stream<Arguments> updateOrderForLock_invalidRequest_MethodSource() {
         return Stream.of(
                 Arguments.of(new UpdateOrderForLockRequest(null),
-                        "Действие по заявке на блокировку карты не должно быть null"),
+                        "Новый статус заявки на блокировку карты не должен быть null"),
                 Arguments.of(new UpdateOrderForLockRequest("xyz"),
-                        "Недопустимое имя действия по заявке на блокировку карты")
+                        "Недопустимое имя нового статуса заявки на блокировку карты")
         );
     }
 

@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class OrderForLock extends BaseEntity {
+public class OrderForLock extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

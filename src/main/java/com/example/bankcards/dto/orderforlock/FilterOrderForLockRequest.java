@@ -1,6 +1,7 @@
 package com.example.bankcards.dto.orderforlock;
 
 import com.example.bankcards.dto.common.PageableRequest;
+import com.example.bankcards.util.validation.ValidUUID;
 import jakarta.validation.Valid;
 import lombok.*;
 
@@ -14,10 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 public class FilterOrderForLockRequest {
 
+    @ValidUUID(message = "Недопустимый формат индентификатора карты")
     private String cardId;
     private LocalDateTime createTimeFrom;
     private LocalDateTime createTimeTo;
-    private Boolean deleted;
 
     @Valid
     private List<OrderForLockStatusRequest> statuses;
