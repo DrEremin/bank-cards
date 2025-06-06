@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: "08.add_roles.yml"
+      author: "Ivan Eremin"
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  value: 1961a6a5-4236-43d6-ba94-b0b6af7c00e2
+              - column:
+                  name: role_name
+                  value: ROLE_ADMIN
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  value: 267d5ac3-21a4-4fa4-bece-1ad3156cfa41
+              - column:
+                  name: role_name
+                  value: ROLE_USER

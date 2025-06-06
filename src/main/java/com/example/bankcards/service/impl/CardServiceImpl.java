@@ -4,6 +4,7 @@ import com.example.bankcards.dto.card.*;
 import com.example.bankcards.dto.common.PageableRequest;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.CardStatus;
+import com.example.bankcards.entity.RoleName;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.BankCardsException;
 import com.example.bankcards.exception.EntityNotFoundException;
@@ -16,6 +17,7 @@ import com.example.bankcards.util.mapper.PageableMapper;
 import com.example.bankcards.util.property.ValidPeriodProperty;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,7 @@ public class CardServiceImpl implements CardService {
     private final UserRepository userRepository;
     private final ValidPeriodProperty validPeriodProperty;
     private final OrderForLockRepository orderForLockRepository;
+    private final BasicTextEncryptor basicTextEncryptor;
 
     @Override
     @Transactional
@@ -46,9 +50,19 @@ public class CardServiceImpl implements CardService {
 
         User owner = userRepository.findById(UUID.fromString(ownerId))
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь с ID: %s не найден".formatted(ownerId)));
+
+        boolean isOwnerHavaUserRole = owner.getRoles().stream()
+                .map(r -> r.getRoleName().name())
+                .anyMatch(r -> r.equals(RoleName.ROLE_USER.name()));
+
+        if (!isOwnerHavaUserRole) {
+            throw new BankCardsException("Ошибка при создании карты. Пользователь %s не является USER"
+                    .formatted(owner.getUserName()));
+        }
+
         Card card = cardRepository.save(buildCard(owner, expiredTime));
 
-        return CardResponseMapper.fromCard(card);
+        return CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
     }
 
     @Override
@@ -67,7 +81,9 @@ public class CardServiceImpl implements CardService {
             card.setStatus(CardStatus.valueOf(request.getNewStatus()));
         }
 
-        return CardResponseMapper.fromCard(cardRepository.save(card));
+        card = cardRepository.save(card);
+
+        return CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
     }
 
     @Override
@@ -78,6 +94,12 @@ public class CardServiceImpl implements CardService {
                     orderForLockRepository.deleteByCardId(cardId);
                     cardRepository.deleteById(cardId);
                 });
+    }
+
+    public List<CardResponse> findAllByUserId(UUID userId, Pageable pageable) {
+        return cardRepository.findAllByUserId(userId, pageable).stream()
+                .map(card -> CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber())))
+                .toList();
     }
 
     @Override
@@ -105,7 +127,7 @@ public class CardServiceImpl implements CardService {
                         request.getExpiredTimeTo(),
                         cardStatuses,
                         pageable).stream()
-                .map(CardResponseMapper::fromCard)
+                .map(card -> CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber())))
                 .toList();
     }
 
@@ -113,7 +135,7 @@ public class CardServiceImpl implements CardService {
         Card card = cardRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Карта с ID: %s не найдена".formatted(id)));
 
-        return CardResponseMapper.fromCard(card);
+        return CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
     }
 
     public BalanceResponse getBalanceById(UUID cardId) {
@@ -143,9 +165,10 @@ public class CardServiceImpl implements CardService {
     private Card buildCard(User owner, LocalDateTime expiredTime) {
         RandomStringUtils randomStringUtils = RandomStringUtils.secure();
         String cardNumber = randomStringUtils.nextNumeric(LENGTH_CARD_NUMBER);
+        String encodedCardNumber = basicTextEncryptor.encrypt(cardNumber);
 
         return Card.builder()
-                .encodedNumber(cardNumber)
+                .encodedNumber(encodedCardNumber)
                 .expiredTime(expiredTime)
                 .owner(owner)
                 .status(CardStatus.ACTIVE)

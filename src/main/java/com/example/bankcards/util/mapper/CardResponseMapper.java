@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 
 public class CardResponseMapper {
 
-    public static CardResponse fromCard(Card card) {
+    public static CardResponse fromCard(Card card, String decodedNumber) {
         String ownerId = card.getOwner().getId().toString();
         ValidThruResponse validThruResponse = buildValidThruResponse(card.getExpiredTime());
-        String maskedNumber = CardNumberMasker.maskNumber(card.getEncodedNumber());
+        String maskedNumber = CardNumberMasker.maskNumber(decodedNumber);
         return CardResponse.builder()
                 .id(card.getId().toString())
                 .ownerId(ownerId)

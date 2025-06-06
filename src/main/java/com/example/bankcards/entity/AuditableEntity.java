@@ -1,9 +1,13 @@
 package com.example.bankcards.entity;
+
+import com.example.bankcards.security.UserInfo;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
@@ -11,8 +15,6 @@ import java.time.LocalDateTime;
 @Setter
 @MappedSuperclass
 public class AuditableEntity {
-
-    public static final String DEFAULT_DB_USER = "bank-cards";
 
     /**
      * Время создания записи
@@ -34,15 +36,24 @@ public class AuditableEntity {
     @PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
+        String userName = getUserName();
         this.createTime = now;
         this.lastUpdateTime = now;
-        this.createUser = DEFAULT_DB_USER;
-        this.lastUpdateUser = DEFAULT_DB_USER;
+        this.createUser = userName;
+        this.lastUpdateUser = userName;
     }
 
     @PreUpdate
     public void preUpdate() {
+        String userName = getUserName();
         this.lastUpdateTime = LocalDateTime.now();
-        this.lastUpdateUser = DEFAULT_DB_USER;
+        this.lastUpdateUser = userName;
+    }
+
+    private String getUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserInfo userInfo = (UserInfo) authentication.getPrincipal();
+
+        return userInfo.getUsername();
     }
 }

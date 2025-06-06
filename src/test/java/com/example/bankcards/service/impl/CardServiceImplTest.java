@@ -27,7 +27,7 @@ class CardServiceImplTest extends AbstractTest {
     private final User user = User.builder()
             .id(UUID.randomUUID())
             .userName("Test")
-            .roles(Set.of(new Role(UUID.randomUUID(), RoleName.ROLE_ADMIN)))
+            .roles(Set.of(new Role(UUID.randomUUID(), RoleName.ROLE_USER)))
             .build();
 
     private final CreateCardRequest createCardRequest = CreateCardRequest.builder()

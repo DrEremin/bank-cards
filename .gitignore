@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 src/main/generated
 desc
+src/main/resources/application.properties
 
 ### IntelliJ IDEA ###
 .idea/

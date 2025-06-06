@@ -21,6 +21,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
         """)
     Optional<User> findByIdWithRoles(UUID id);
 
+    @Query("""
+        FROM User u
+        JOIN FETCH u.roles
+        WHERE :userName IS NOT NULL AND u.userName = :userName
+        """)
     Optional<User> findByUserName(String userName);
 
     @Query("""
