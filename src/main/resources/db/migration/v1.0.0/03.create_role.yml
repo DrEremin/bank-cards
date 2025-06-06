@@ -35,10 +35,3 @@ databaseChangeLog:
                   name: last_update_user
                   type: varchar
                   remarks: "Пользователь, внесший последние изменения"
-              - column:
-                  name: deleted
-                  type: boolean
-                  remarks: "Признак удаления записи"
-                  defaultValue: "false"
-                  constraints:
-                    nullable: false

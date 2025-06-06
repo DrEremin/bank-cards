@@ -15,9 +15,10 @@ import java.util.List;
 public class FilterCardRequest {
 
     private String ownerId;
+    private LocalDateTime createTimeFrom;
+    private LocalDateTime createTimeTo;
     private LocalDateTime expiredTimeForm;
     private LocalDateTime expiredTimeTo;
-    private Boolean deleted;
 
     @Valid
     private List<CardStatusRequest> statuses;

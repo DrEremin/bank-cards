@@ -11,8 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 public class UpdateOrderForLockRequest {
 
-    @NotNull(message = "Действие по заявке на блокировку карты не должно быть null")
-    @Pattern(regexp = "CANCEL_ORDER|COMPLETE_ORDER",
-            message = "Недопустимое имя действия по заявке на блокировку карты")
-    private String cardLockOrderAction;
+    @NotNull(message = "Новый статус заявки на блокировку карты не должен быть null")
+    @Pattern(regexp = "CANCELLED|COMPLETED",
+            message = "Недопустимое имя нового статуса заявки на блокировку карты")
+    private String newStatus;
 }

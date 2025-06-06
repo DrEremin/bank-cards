@@ -22,3 +22,9 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+
+
+bank-cards:
+  valid-period:
+    min-months: 1
+    max-months: 60

@@ -6,7 +6,9 @@ import com.example.bankcards.dto.orderforlock.FilterOrderForLockRequest;
 import com.example.bankcards.dto.orderforlock.UpdateOrderForLockRequest;
 import com.example.bankcards.dto.common.CommonRequest;
 import com.example.bankcards.dto.common.CommonResponse;
+import com.example.bankcards.service.OrderForLockService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,47 +16,54 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/orders-for-locks")
+@RequestMapping("/api/v1/lock-orders")
+@RequiredArgsConstructor
 public class OrderForLockController {
+
+    private final OrderForLockService orderForLockService;
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public CommonResponse<OrderForLockResponse> createOrderForLock(
             @RequestBody @Valid CommonRequest<CreateOrderForLockRequest> request) {
-        // Добавить логику
+        OrderForLockResponse response = orderForLockService.createOrderForLok(request.getBody());
 
         return CommonResponse.<OrderForLockResponse>builder()
                 .id(UUID.randomUUID())
-                .build();
-    }
-
-    @DeleteMapping("/{id}")
-    public CommonResponse<Void> deleteOrderForLock(@PathVariable("id") UUID id) {
-        // Добавить логику
-
-        return CommonResponse.<Void>builder()
-                .id(UUID.randomUUID())
+                .body(response)
                 .build();
     }
 
     @PatchMapping("/{id}")
     public CommonResponse<OrderForLockResponse> updateOrderForLock(
-            @PathVariable("id") UUID cardLockOrderId,
+            @PathVariable("id") UUID id,
             @RequestBody @Valid CommonRequest<UpdateOrderForLockRequest> request) {
-        // Добавить логику
+        OrderForLockResponse response = orderForLockService.updateOrderForLock(id, request.getBody());
 
         return CommonResponse.<OrderForLockResponse>builder()
                 .id(UUID.randomUUID())
+                .body(response)
                 .build();
     }
 
     @PostMapping("/filter")
     public CommonResponse<List<OrderForLockResponse>> findByFilter(
             @RequestBody @Valid CommonRequest<FilterOrderForLockRequest> request) {
-        //Добавить логику
+        List<OrderForLockResponse> responses = orderForLockService.findByFilter(request.getBody());
 
         return CommonResponse.<List<OrderForLockResponse>>builder()
                 .id(UUID.randomUUID())
+                .body(responses)
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public CommonResponse<OrderForLockResponse> getOrderForLock(@PathVariable("id") UUID id) {
+        OrderForLockResponse response = orderForLockService.getOrderForLock(id);
+
+        return CommonResponse.<OrderForLockResponse>builder()
+                .id(UUID.randomUUID())
+                .body(response)
                 .build();
     }
 }

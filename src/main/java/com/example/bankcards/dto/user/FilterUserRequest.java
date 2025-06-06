@@ -4,6 +4,7 @@ import com.example.bankcards.dto.common.PageableRequest;
 import jakarta.validation.Valid;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -13,8 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 public class FilterUserRequest {
 
-    private String userName;
-    private Boolean deleted;
+    private LocalDateTime createTimeFrom;
+    private LocalDateTime createTimeTo;
 
     @Valid
     private List<RoleNameRequest> roles;

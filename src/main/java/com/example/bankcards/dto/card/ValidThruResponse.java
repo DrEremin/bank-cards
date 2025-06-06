@@ -9,6 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 public class ValidThruResponse {
 
-    private Integer expireYear;
-    private Integer expireMonth;
+    private String expireYear;
+    private String expireMonth;
 }

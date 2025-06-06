@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Role extends BaseEntity {
+public class Role extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

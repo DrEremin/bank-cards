@@ -74,6 +74,8 @@ class CardControllerTest extends AbstractTest {
                         "Идентификатор владельца карты не должен быть null"),
                 Arguments.of(new CreateCardRequest("xyz", new ValidThruRequest(2025, 12)),
                         "Идентификатор владельца карты не соотетствует формату UUID"),
+                Arguments.of(new CreateCardRequest(id, null),
+                        "Срок действия карты не должен быть null"),
                 Arguments.of(new CreateCardRequest(id, new ValidThruRequest(null, 12)),
                         "Год срока действия карты не должен быть null"),
                 Arguments.of(new CreateCardRequest(id, new ValidThruRequest(2024, 12)),
@@ -89,25 +91,22 @@ class CardControllerTest extends AbstractTest {
     private static Stream<Arguments> updateCard_invalidRequest_methodSource() {
         return Stream.of(
                 Arguments.of(
-                        new UpdateCardRequest(new CardStatusRequest(null), new ValidThruRequest(2025, 12)),
-                        "Имя статуса активности карты не должно быть null"),
-                Arguments.of(
-                        new UpdateCardRequest(new CardStatusRequest("xyz"), new ValidThruRequest(2025, 12)),
+                        new UpdateCardRequest("xyz", new ValidThruRequest(2025, 12)),
                         "Недопустимое имя статуса активности карты"),
                 Arguments.of(
-                        new UpdateCardRequest(new CardStatusRequest(roleAdmin), new ValidThruRequest(null, 12)),
+                        new UpdateCardRequest(roleAdmin, new ValidThruRequest(null, 12)),
                         "Год срока действия карты не должен быть null"),
                 Arguments.of(
-                        new UpdateCardRequest(new CardStatusRequest(roleAdmin), new ValidThruRequest(2024, 12)),
+                        new UpdateCardRequest(roleAdmin, new ValidThruRequest(2024, 12)),
                         "Год срока действия карты не должен быть меньше 2025"),
                 Arguments.of(
-                        new UpdateCardRequest(new CardStatusRequest(roleAdmin), new ValidThruRequest(2025, null)),
+                        new UpdateCardRequest(roleAdmin, new ValidThruRequest(2025, null)),
                         "Месяц срока действия карты не должен быть null"),
                 Arguments.of(
-                        new UpdateCardRequest(new CardStatusRequest(roleAdmin), new ValidThruRequest(2025, 0)),
+                        new UpdateCardRequest(roleAdmin, new ValidThruRequest(2025, 0)),
                         "Месяц срока действия карты не должен быть меньше 1"),
                 Arguments.of(
-                        new UpdateCardRequest(new CardStatusRequest(roleAdmin), new ValidThruRequest(2025, 13)),
+                        new UpdateCardRequest(roleAdmin, new ValidThruRequest(2025, 13)),
                         "Месяц срока действия карты не должен больше 12"));
     }
 

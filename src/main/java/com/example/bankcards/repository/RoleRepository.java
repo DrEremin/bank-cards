@@ -1,6 +1,7 @@
 package com.example.bankcards.repository;
 
 import com.example.bankcards.entity.Role;
+import com.example.bankcards.entity.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,7 +13,8 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
 
     @Query("""
         FROM Role r
-        WHERE r.roleName IN (:roleNames)
+        WHERE :roleNames IS NOT NULL
+            AND r.roleName IN (:roleNames)
         """)
-    Set<Role> findByRoleNames(List<String> roleNames);
+    Set<Role> findByRoleNames(List<RoleName> roleNames);
 }

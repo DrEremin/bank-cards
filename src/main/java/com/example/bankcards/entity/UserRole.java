@@ -17,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "users_role")
-public class UserRole extends BaseEntity {
+public class UserRole {
 
     @EmbeddedId
     private UserRoleId id;
@@ -25,6 +25,8 @@ public class UserRole extends BaseEntity {
     @Getter
     @Setter
     @Embeddable
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UserRoleId implements Serializable {
 
         @Column(name = "user_id")
@@ -45,5 +47,18 @@ public class UserRole extends BaseEntity {
         public int hashCode() {
             return Objects.hash(userId, roleId);
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        UserRole userRole = (UserRole) object;
+        return Objects.equals(id, userRole.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

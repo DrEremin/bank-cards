@@ -23,3 +23,6 @@ databaseChangeLog:
   - include:
       file: 06.create_transfer.yml
       relativeToChangeLogFile: true
+  - include:
+      file: 07.create_indexes.yml
+      relativeToChangeLogFile: true
