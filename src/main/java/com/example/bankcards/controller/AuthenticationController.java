@@ -5,6 +5,8 @@ import com.example.bankcards.dto.auth.AuthenticationResponse;
 import com.example.bankcards.dto.common.CommonRequest;
 import com.example.bankcards.dto.common.CommonResponse;
 import com.example.bankcards.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,11 +18,13 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@Tag(name = "API аутентификации", description = "Подтвержение подлинности пользователей с выдачей JWT")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
+    @Operation(summary = "Войти в аккаунт пользователя. Доступ: не аутентифицированный пользователь")
     public CommonResponse<AuthenticationResponse> signUp(@RequestBody CommonRequest<AuthenticationRequest> request) {
         AuthenticationResponse response = authenticationService.authenticateUser(request.getBody());
 

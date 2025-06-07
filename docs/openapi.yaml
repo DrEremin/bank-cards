@@ -1,1 +1,1797 @@
-# Здесь будет OpenAPI описание всех доступных эндпоинтов и моделей данных.
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080/bank-cards
+  description: Generated server url
+tags:
+- name: API переводов
+  description: Управление переводами между картами
+- name: API аккаунтов пользователей
+  description: Управление данными аккаунтов пользователей
+- name: API запросов на блокировки карт
+  description: Управление запросами на блокироки карт
+- name: API карт
+  description: Управление данными банковских карт
+- name: API аутентификации
+  description: Подтвержение подлинности пользователей с выдачей JWT
+paths:
+  /api/v1/users:
+    post:
+      tags:
+      - API аккаунтов пользователей
+      summary: "Создать аккаунт пользователя. Доступ: ADMIN"
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestCreateUserRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseUserResponse"
+  /api/v1/users/filter:
+    post:
+      tags:
+      - API аккаунтов пользователей
+      summary: "Получить список пользователей с фильтрацией и сортировкой. Доступ\
+        : ADMIN"
+      operationId: findByFilter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestFilterUserRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseListUserResponse"
+  /api/v1/transfers:
+    post:
+      tags:
+      - API переводов
+      summary: "Сделать перевод с карты пользователя на другую карту этого пользов\
+        ателя. Доступ: USER"
+      operationId: createTransfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestTransferRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseTransferResponse"
+  /api/v1/lock-orders:
+    post:
+      tags:
+      - API запросов на блокировки карт
+      summary: "Создать запрос на блокировку карты. Доступ: USER"
+      operationId: createOrderForLock
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestCreateOrderForLockRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseOrderForLockResponse"
+  /api/v1/lock-orders/filter:
+    post:
+      tags:
+      - API запросов на блокировки карт
+      summary: "Получить список запросов на блокировки карт с фильтрацией и сортир\
+        овкой. Доступ: ADMIN"
+      operationId: findByFilter_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestFilterOrderForLockRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseListOrderForLockResponse"
+  /api/v1/cards:
+    post:
+      tags:
+      - API карт
+      summary: "Создать карту. Доступ: ADMIN"
+      operationId: createCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestCreateCardRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseCardResponse"
+  /api/v1/cards/filter:
+    post:
+      tags:
+      - API карт
+      summary: "Вывести список карт c фильтрацией и сортировкой. Доступ: ADMIN"
+      operationId: findByFilter_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestFilterCardRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseListCardResponse"
+  /api/v1/auth/login:
+    post:
+      tags:
+      - API аутентификации
+      summary: "Войти в аккаунт пользователя. Доступ: не аутентифицированный польз\
+        ователь"
+      operationId: signUp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestAuthenticationRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseAuthenticationResponse"
+  /api/v1/users/{id}:
+    get:
+      tags:
+      - API аккаунтов пользователей
+      summary: "Получить данные пользователя. Доступ: ADMIN"
+      operationId: getUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseUserResponse"
+    delete:
+      tags:
+      - API аккаунтов пользователей
+      summary: "Удалить аккаунт пользователя. Доступ: ADMIN"
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "204":
+          description: No Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseVoid"
+    patch:
+      tags:
+      - API аккаунтов пользователей
+      summary: "Обновить данные пользователя (пароль/роли). Доступ: ADMIN"
+      operationId: updateUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestUpdateUserRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseUserResponse"
+  /api/v1/lock-orders/{id}:
+    get:
+      tags:
+      - API запросов на блокировки карт
+      summary: "Получить данные запроса на блокировку карты. Доступ: ADMIN"
+      operationId: getOrderForLock
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseOrderForLockResponse"
+    patch:
+      tags:
+      - API запросов на блокировки карт
+      summary: "Обновить статус запроса на блокировку карты. Доступ: ADMIN"
+      operationId: updateOrderForLock
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestUpdateOrderForLockRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseOrderForLockResponse"
+  /api/v1/cards/{id}:
+    get:
+      tags:
+      - API карт
+      summary: "Получить информацию о карте. Доступ: ADMIN, USER"
+      operationId: getCard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseCardResponse"
+    delete:
+      tags:
+      - API карт
+      summary: "Удалить карту. Доступ: ADMIN"
+      operationId: deleteCard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "204":
+          description: No Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseVoid"
+    patch:
+      tags:
+      - API карт
+      summary: "Обновить статус/срок действия карты. Доступ: ADMIN"
+      operationId: updateCard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonRequestUpdateCardRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseCardResponse"
+  /api/v1/cards/{id}/balance:
+    get:
+      tags:
+      - API карт
+      summary: "Получить баланс на карте. Доступ: USER"
+      operationId: getBalance
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseBalanceResponse"
+  /api/v1/cards/user/{id}:
+    get:
+      tags:
+      - API карт
+      summary: "Вывести список всех карт пользователя. Доступ: USER"
+      operationId: findAllByUser
+      parameters:
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseObject"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommonResponseListCardResponse"
+components:
+  schemas:
+    CommonResponseObject:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          description: DTO ответа с полезной нагрузкой
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    ValidationError:
+      type: object
+      description: DTO ответа c информацией об ошибке валидации
+      properties:
+        field:
+          type: string
+          description: Имя невалидного поля
+        message:
+          type: string
+          description: Сообщение о причине ошибки
+      required:
+      - field
+      - message
+    CommonRequestCreateUserRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/CreateUserRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    CreateUserRequest:
+      type: object
+      description: DTO запроса на создание аккаунта пользователя
+      properties:
+        userName:
+          type: string
+          description: Имя пользователя
+          maxLength: 15
+          minLength: 4
+        password:
+          type: string
+          description: Пароль пользователя
+          maxLength: 15
+          minLength: 4
+        roles:
+          type: array
+          description: Список DTO запроса с именем роли
+          items:
+            $ref: "#/components/schemas/RoleNameRequest"
+          minItems: 1
+      required:
+      - password
+      - roles
+      - userName
+    RoleNameRequest:
+      type: object
+      description: DTO запроса с именем роли пользователя
+      properties:
+        role:
+          type: string
+          description: Имя роли пользователя
+      required:
+      - role
+    CommonResponseUserResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          $ref: "#/components/schemas/UserResponse"
+          description: DTO ответа с полезной нагрузкой
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    UserResponse:
+      type: object
+      description: DTO ответа с данными пользователя
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор пользователя
+        userName:
+          type: string
+          description: Имя пользователя
+        roles:
+          type: array
+          description: Список ролей пользователя
+          items:
+            type: string
+      required:
+      - id
+      - roles
+      - userName
+    CommonRequestFilterUserRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/FilterUserRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    FilterUserRequest:
+      type: object
+      description: DTO запроса на получение списка пользователей с фильтрацией и сортировкой
+      properties:
+        createTimeFrom:
+          type: string
+          format: date-time
+          description: Нижняя граница времени создания акканта пользователя
+        createTimeTo:
+          type: string
+          format: date-time
+          description: Верхняя граница времени создания аккаунта пользователя
+        roles:
+          type: array
+          description: Список DTO запроса с именем роли пользователя
+          items:
+            $ref: "#/components/schemas/RoleNameRequest"
+        page:
+          $ref: "#/components/schemas/PageableRequest"
+          description: DTO запроса с данными по страницам и сортировками
+    PageableRequest:
+      type: object
+      description: DTO запроса с данными по страницам и сортировкам
+      properties:
+        number:
+          type: integer
+          format: int32
+          description: Номер страницы
+        size:
+          type: integer
+          format: int32
+          description: Размер страницы
+        sorts:
+          type: array
+          description: Список DTO запроса с данными по сортировкам
+          items:
+            $ref: "#/components/schemas/SortRequest"
+      required:
+      - number
+      - size
+    SortRequest:
+      type: object
+      description: DTO запроса с данными по сортировкам
+      properties:
+        field:
+          type: string
+          description: Имя поля по которому проводится сортировка
+          minLength: 1
+        direction:
+          type: string
+          description: Направление сортировки
+          pattern: ASC|DESC
+      required:
+      - field
+    CommonResponseListUserResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          type: array
+          description: DTO ответа с полезной нагрузкой
+          items:
+            $ref: "#/components/schemas/UserResponse"
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    CommonRequestTransferRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/TransferRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    TransferRequest:
+      type: object
+      description: DTO запроса на перевод с карты на карту
+      properties:
+        sourceCardId:
+          type: string
+          description: Уникальный идентификатор карты-источника
+        targetCardId:
+          type: string
+          description: Уникальный идентификатор карты назначения
+        amount:
+          type: string
+          description: Сумма перевода
+          pattern: "[0-9]{1,18}\\.[0-9]{2}"
+      required:
+      - amount
+      - sourceCardId
+      - targetCardId
+    CommonResponseTransferResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          $ref: "#/components/schemas/TransferResponse"
+          description: DTO ответа с полезной нагрузкой
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    TransferResponse:
+      type: object
+      description: DTO ответа на перевод с карты на карту
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор транзакции
+        sourceCardNumber:
+          type: string
+          description: Номер карты-источника
+          example: '**** **** **** 3456'
+        targetCardNUmber:
+          type: string
+          description: Номер карты назначения
+          example: '**** **** **** 3456'
+        amount:
+          type: string
+          description: Сумма перевода
+        timestamp:
+          type: string
+          format: date-time
+          description: Время исполнения транзакции
+      required:
+      - amount
+      - id
+      - sourceCardNumber
+      - targetCardNUmber
+      - timestamp
+    CommonRequestCreateOrderForLockRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/CreateOrderForLockRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    CreateOrderForLockRequest:
+      type: object
+      description: DTO запроса на создание заявки для блокировки карты
+      properties:
+        cardId:
+          type: string
+          description: Уникальный идентификатор карты
+      required:
+      - cardId
+    CommonResponseOrderForLockResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          $ref: "#/components/schemas/OrderForLockResponse"
+          description: DTO ответа с полезной нагрузкой
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    OrderForLockResponse:
+      type: object
+      description: DTO ответа при получении заявки на блокировку карты
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор заявки на блокировку карты
+        status:
+          type: string
+          description: Статус заявки на блокировку карты
+      required:
+      - id
+      - status
+    CommonRequestFilterOrderForLockRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/FilterOrderForLockRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    FilterOrderForLockRequest:
+      type: object
+      description: DTO запроса для получения списка заявок на блокировки карт с филтрацией
+        и сортировкой
+      properties:
+        cardId:
+          type: string
+          description: Уникальный идентификатор карты
+        createTimeFrom:
+          type: string
+          format: date-time
+          description: Нижняя граница времени создания заявки на блокировку карты
+        createTimeTo:
+          type: string
+          format: date-time
+          description: Верхняя граница времени создания заявки на блокировку карты
+        statuses:
+          type: array
+          description: Список DTO запроса со статусом заявки на блокировку карты
+          items:
+            $ref: "#/components/schemas/OrderForLockStatusRequest"
+        page:
+          $ref: "#/components/schemas/PageableRequest"
+          description: DTO запроса с данными по страницам и сортировкам
+    OrderForLockStatusRequest:
+      type: object
+      description: DTO запроса со статусом заявки на блокировку карты
+      properties:
+        status:
+          type: string
+          description: Статус заявки на блокировку карты
+          pattern: PENDING|CANCELLED|COMPLETED
+      required:
+      - status
+    CommonResponseListOrderForLockResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          type: array
+          description: DTO ответа с полезной нагрузкой
+          items:
+            $ref: "#/components/schemas/OrderForLockResponse"
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    CommonRequestCreateCardRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/CreateCardRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    CreateCardRequest:
+      type: object
+      description: DTO запроса на создание карты
+      properties:
+        ownerId:
+          type: string
+          description: Уникальный идентификатор владельца карты
+        validThru:
+          $ref: "#/components/schemas/ValidThruRequest"
+          description: Срок действия карты
+      required:
+      - ownerId
+      - validThru
+    ValidThruRequest:
+      type: object
+      description: DTO запроса со сроком действия карты
+      properties:
+        expiryYear:
+          type: integer
+          format: int32
+          description: Год окончания действия карты
+          minimum: 2025
+        expiryMonth:
+          type: integer
+          format: int32
+          description: Месяц окончания действия карты
+          maximum: 12
+          minimum: 1
+      required:
+      - expiryMonth
+      - expiryYear
+    CardResponse:
+      type: object
+      description: DTO ответа с данными карты
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор карты
+        number:
+          type: string
+          description: Номер карты
+          example: '**** **** **** 3456'
+        ownerId:
+          type: string
+          description: Уникальный идентификатор владельца карты
+        status:
+          type: string
+          description: Статус карты
+        validThru:
+          $ref: "#/components/schemas/ValidThruResponse"
+          description: Срок действия карты
+      required:
+      - id
+      - number
+      - ownerId
+      - status
+      - validThru
+    CommonResponseCardResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          $ref: "#/components/schemas/CardResponse"
+          description: DTO ответа с полезной нагрузкой
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    ValidThruResponse:
+      type: object
+      description: DTO ответа со сроком действия карты
+      properties:
+        expireYear:
+          type: string
+          description: Год окончания действия карты
+        expireMonth:
+          type: string
+          description: Месяц окончания действия карты
+      required:
+      - expireMonth
+      - expireYear
+    CardStatusRequest:
+      type: object
+      description: DTO запроса со статусом активности карты
+      properties:
+        status:
+          type: string
+          description: Статус активности карты
+          pattern: ACTIVE|LOCKED|EXPIRED
+      required:
+      - status
+    CommonRequestFilterCardRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/FilterCardRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    FilterCardRequest:
+      type: object
+      description: DTO запроса на получение списка карт с фильтрацией и сортировкой
+      properties:
+        ownerId:
+          type: string
+          description: Уникальный идентификатор владельца карты
+        createTimeFrom:
+          type: string
+          format: date-time
+          description: Нижняя граница времени создания карты
+        createTimeTo:
+          type: string
+          format: date-time
+          description: Верхняя граница времени создания карты
+        expiredTimeForm:
+          type: string
+          format: date-time
+          description: Нижняя граница времени окончания срока действия карты
+        expiredTimeTo:
+          type: string
+          format: date-time
+          description: Верхняя граница времени окончания срока действия карты
+        statuses:
+          type: array
+          description: Список DTO запроса со статусом активности карты
+          items:
+            $ref: "#/components/schemas/CardStatusRequest"
+        page:
+          $ref: "#/components/schemas/PageableRequest"
+          description: DTO запроса с данными по страницам и сортировкам
+    CommonResponseListCardResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          type: array
+          description: DTO ответа с полезной нагрузкой
+          items:
+            $ref: "#/components/schemas/CardResponse"
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    AuthenticationRequest:
+      type: object
+      description: DTO запроса с данными для аутентификации пользователя
+      properties:
+        userName:
+          type: string
+          description: Имя пользователя
+          maxLength: 15
+          minLength: 4
+        password:
+          type: string
+          description: Пароль пользователя
+          maxLength: 15
+          minLength: 4
+      required:
+      - password
+      - userName
+    CommonRequestAuthenticationRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/AuthenticationRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    AuthenticationResponse:
+      type: object
+      description: DTO ответа после успешной аутентификации
+      properties:
+        token:
+          type: string
+          description: JWT
+        expiresInMinutes:
+          type: string
+          description: Время жизни токена
+        tokenType:
+          type: string
+          description: Тип токена
+      required:
+      - expiresInMinutes
+      - token
+      - tokenType
+    CommonResponseAuthenticationResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          $ref: "#/components/schemas/AuthenticationResponse"
+          description: DTO ответа с полезной нагрузкой
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    CommonRequestUpdateUserRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/UpdateUserRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    UpdateUserRequest:
+      type: object
+      description: DTO запроса на обновление данных пользователя
+      properties:
+        newPassword:
+          type: string
+          description: Новвый пароль пользователя
+          maxLength: 15
+          minLength: 4
+          pattern: ^(?=\s*\S).*$
+        newRoles:
+          type: array
+          description: Список DTO запроса с именем роли пользователя
+          items:
+            $ref: "#/components/schemas/RoleNameRequest"
+    CommonRequestUpdateOrderForLockRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/UpdateOrderForLockRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    UpdateOrderForLockRequest:
+      type: object
+      description: DTO запроса для обновления статуса заявки на блокировку карты
+      properties:
+        newStatus:
+          type: string
+          description: Новый статус заявки на блокировку карты
+          pattern: CANCELLED|COMPLETED
+      required:
+      - newStatus
+    CommonRequestUpdateCardRequest:
+      type: object
+      description: DTO-обертка над телом запроса
+      properties:
+        body:
+          $ref: "#/components/schemas/UpdateCardRequest"
+          description: DTO запроса с полезной нагрузкой
+      required:
+      - body
+    UpdateCardRequest:
+      type: object
+      description: DTO запроса на обновление карты
+      properties:
+        newStatus:
+          type: string
+          description: Новый статус карты
+          pattern: ACTIVE|LOCKED|EXPIRED
+        newValidThru:
+          $ref: "#/components/schemas/ValidThruRequest"
+          description: Срок действия карты
+    BalanceResponse:
+      type: object
+      description: DTO ответа с балансом карты
+      properties:
+        balance:
+          type: string
+          description: Баланс карты
+      required:
+      - balance
+    CommonResponseBalanceResponse:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          $ref: "#/components/schemas/BalanceResponse"
+          description: DTO ответа с полезной нагрузкой
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id
+    CommonResponseVoid:
+      type: object
+      description: DTO-обертка над телом ответа
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор ответа
+        body:
+          description: DTO ответа с полезной нагрузкой
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+        validationErrors:
+          type: array
+          description: Список DTO с ошибоками валидации
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+      - id

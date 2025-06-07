@@ -7,6 +7,8 @@ import com.example.bankcards.dto.user.UpdateUserRequest;
 import com.example.bankcards.dto.common.CommonRequest;
 import com.example.bankcards.dto.common.CommonResponse;
 import com.example.bankcards.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@Tag(name = "API аккаунтов пользователей", description = "Управление данными аккаунтов пользователей")
 public class UserController {
 
     private final UserService userService;
@@ -26,6 +29,7 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(code = HttpStatus.CREATED)
+    @Operation(summary = "Создать аккаунт пользователя. Доступ: ADMIN")
     public CommonResponse<UserResponse> createUser(@RequestBody @Valid CommonRequest<CreateUserRequest> request) {
         UserResponse response = userService.createUser(request.getBody());
 
@@ -38,6 +42,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Удалить аккаунт пользователя. Доступ: ADMIN")
     public CommonResponse<Void> deleteUser(@PathVariable("id") UUID id) {
         userService.deleteUser(id);
 
@@ -48,6 +53,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Обновить данные пользователя (пароль/роли). Доступ: ADMIN")
     public CommonResponse<UserResponse> updateUser(
             @PathVariable("id") UUID id,
             @RequestBody @Valid CommonRequest<UpdateUserRequest> request) {
@@ -61,6 +67,7 @@ public class UserController {
 
     @PostMapping("/filter")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Получить список пользователей с фильтрацией и сортировкой. Доступ: ADMIN")
     public CommonResponse<List<UserResponse>> findByFilter(
             @RequestBody @Valid CommonRequest<FilterUserRequest> request) {
         List<UserResponse> responses = userService.findByFilter(request.getBody());
@@ -73,6 +80,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Получить данные пользователя. Доступ: ADMIN")
     public CommonResponse<UserResponse> getUser(@PathVariable("id") UUID id) {
         UserResponse response = userService.getUser(id);
 

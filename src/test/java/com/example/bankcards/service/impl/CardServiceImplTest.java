@@ -23,6 +23,7 @@ import static org.mockito.Mockito.*;
 class CardServiceImplTest extends AbstractTest {
 
     private final UUID cardId = UUID.randomUUID();
+    private final String cardNumber = "1234567891234567";
 
     private final User user = User.builder()
             .id(UUID.randomUUID())
@@ -132,6 +133,10 @@ class CardServiceImplTest extends AbstractTest {
                 .thenReturn(10);
         when(mockUserRepository.findById(eq(UUID.fromString(createCardRequest.getOwnerId()))))
                 .thenReturn(Optional.of(user));
+        when(mockBasicTextEncryptor.decrypt(anyString()))
+                .thenReturn(cardNumber);
+        when(mockBasicTextEncryptor.encrypt(anyString()))
+                .thenReturn(cardNumber);
         when(mockCardRepository.save(any(Card.class)))
                 .thenReturn(card);
 
@@ -145,6 +150,8 @@ class CardServiceImplTest extends AbstractTest {
                 .save(any(Card.class));
         verify(mockUserRepository)
                 .findById(any(UUID.class));
+        verify(mockBasicTextEncryptor).decrypt(anyString());
+        verify(mockBasicTextEncryptor).encrypt(anyString());
     }
 
     @Test
@@ -230,6 +237,8 @@ class CardServiceImplTest extends AbstractTest {
                 .thenReturn(10);
         when(mockCardRepository.save(any(Card.class)))
                 .thenReturn(card);
+        when(mockBasicTextEncryptor.decrypt(anyString()))
+                .thenReturn(cardNumber);
 
         updateCardRequest.setNewValidThru(new ValidThruRequest(currentTime.getYear(), currentTime.getMonthValue()));
         cardService.updateCard(cardId, updateCardRequest);
@@ -242,6 +251,7 @@ class CardServiceImplTest extends AbstractTest {
                 .getMaxMonths();
         verify(mockCardRepository)
                 .save(any(Card.class));
+        verify(mockBasicTextEncryptor).decrypt(anyString());
     }
 
     @Test

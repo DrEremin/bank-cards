@@ -6,6 +6,7 @@ import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.CardService;
 import com.example.bankcards.util.property.ValidPeriodProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,6 +46,9 @@ public abstract class AbstractTest {
 
     @MockitoBean
     protected OrderForLockRepository mockOrderForLockRepository;
+
+    @MockitoBean
+    protected BasicTextEncryptor mockBasicTextEncryptor;
 
     @BeforeAll
     static void beforeAll() {

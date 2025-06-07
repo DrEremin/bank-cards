@@ -1,6 +1,6 @@
 package com.example.bankcards.dto.orderforlock;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @Getter
@@ -8,9 +8,14 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "DTO ответа при получении заявки на блокировку карты")
 public class OrderForLockResponse {
 
+    @Schema(description = "Уникальный идентификатор заявки на блокировку карты",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String id;
+
+    @Schema(description = "Статус заявки на блокировку карты",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String status;
 }
