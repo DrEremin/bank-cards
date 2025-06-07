@@ -28,3 +28,10 @@ bank-cards:
   valid-period:
     min-months: 1
     max-months: 60
+
+springdoc:
+  swagger-ui:
+    path: /api-docs
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs

@@ -20,9 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    public static final String ADMIN = "ADMIN";
-    public static final String USER = "USER";
-
     private final JWTFilter jwtFilter;
 
     @Value("${jasypt.encryptor.password}")
