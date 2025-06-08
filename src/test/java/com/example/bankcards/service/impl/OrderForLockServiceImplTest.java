@@ -1,21 +1,15 @@
 package com.example.bankcards.service.impl;
 
+import com.example.bankcards.AbstractTest;
 import com.example.bankcards.dto.orderforlock.CreateOrderForLockRequest;
 import com.example.bankcards.dto.orderforlock.UpdateOrderForLockRequest;
-import com.example.bankcards.entity.Card;
-import com.example.bankcards.entity.CardStatus;
-import com.example.bankcards.entity.OrderForLock;
-import com.example.bankcards.entity.OrderForLockStatus;
+import com.example.bankcards.entity.*;
 import com.example.bankcards.exception.BankCardsException;
 import com.example.bankcards.exception.EntityNotFoundException;
 import com.example.bankcards.exception.UniquenessViolationException;
-import com.example.bankcards.repository.CardRepository;
-import com.example.bankcards.repository.OrderForLockRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -26,37 +20,32 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-class OrderForLockServiceImplTest {
+class OrderForLockServiceImplTest extends AbstractTest {
 
     private final UUID id = UUID.randomUUID();
-    private final UUID cardId = UUID.randomUUID();
-    private final String cardNumber = "1234567890123456";
+    private final UUID cardId = card.getId();
     private final CreateOrderForLockRequest createOrderForLockRequest = new CreateOrderForLockRequest(cardId.toString());
-    private final Card card = Card.builder()
-            .id(cardId)
-            .encodedNumber(cardNumber)
-            .build();
+
     private final OrderForLock order = new OrderForLock(UUID.randomUUID(), card, OrderForLockStatus.COMPLETED);
 
-    @Mock
-    private OrderForLockRepository mockOrderForLockRepository;
-    @Mock
-    private CardRepository mockCardRepository;
-    @InjectMocks
-    private OrderForLockServiceImpl orderForLockService;
+    @BeforeEach
+    void beforeEach() {
+        card.setOwner(user);
+        card.setStatus(CardStatus.ACTIVE);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 
     @Test
-    void createOrderForLok_cardDoesNotExist_expect_entityNotFoundException() {
-        when(mockCardRepository.findById(eq(cardId)))
+    void createOrderForLock_cardDoesNotExist_expect_entityNotFoundException() {
+        when(mockCardRepository.findByIdWithUser(eq(cardId)))
                 .thenReturn(Optional.empty());
 
         Exception ex = assertThrowsExactly(EntityNotFoundException.class,
-                () -> orderForLockService.createOrderForLok(createOrderForLockRequest));
-        assertEquals("Карта с ID: %s не найдена".formatted(cardId), ex.getMessage());
+                () -> orderForLockService.createOrderForLock(createOrderForLockRequest));
+        assertEquals("Карта не найдена", ex.getMessage());
 
         verify(mockCardRepository)
-                .findById(eq(cardId));
+                .findByIdWithUser(eq(cardId));
         verify(mockOrderForLockRepository, never())
                 .findByCardId(eq(cardId));
         verify(mockOrderForLockRepository, never())
@@ -64,18 +53,54 @@ class OrderForLockServiceImplTest {
     }
 
     @Test
-    void createOrderForLok_orderAlreadyExists_expect_uniquenessViolationException() {
-        when(mockCardRepository.findById(eq(cardId)))
+    void createOrderForLock_cardDoesNotBelongToUser_expect_bankCardsException() {
+        card.setOwner(new User(UUID.randomUUID(), null, null, null, null));
+        when(mockCardRepository.findByIdWithUser(eq(cardId)))
+                .thenReturn(Optional.of(card));
+
+        Exception ex = assertThrowsExactly(BankCardsException.class,
+                () -> orderForLockService.createOrderForLock(createOrderForLockRequest));
+        assertEquals("Карта не принадлежит текущему пользователю", ex.getMessage());
+
+        verify(mockCardRepository)
+                .findByIdWithUser(eq(cardId));
+        verify(mockOrderForLockRepository, never())
+                .findByCardId(eq(cardId));
+        verify(mockOrderForLockRepository, never())
+                .save(any(OrderForLock.class));
+    }
+
+    @Test
+    void createOrderForLock_cardIsNotActive_expect_bankCardsException() {
+        card.setStatus(CardStatus.LOCKED);
+        when(mockCardRepository.findByIdWithUser(eq(cardId)))
+                .thenReturn(Optional.of(card));
+
+        Exception ex = assertThrowsExactly(BankCardsException.class,
+                () -> orderForLockService.createOrderForLock(createOrderForLockRequest));
+        assertEquals("Запрос на блокировку карты отклонен, карта уже не активна", ex.getMessage());
+
+        verify(mockCardRepository)
+                .findByIdWithUser(eq(cardId));
+        verify(mockOrderForLockRepository, never())
+                .findByCardId(eq(cardId));
+        verify(mockOrderForLockRepository, never())
+                .save(any(OrderForLock.class));
+    }
+
+    @Test
+    void createOrderForLock_orderAlreadyExists_expect_uniquenessViolationException() {
+        when(mockCardRepository.findByIdWithUser(eq(cardId)))
                 .thenReturn(Optional.of(card));
         when(mockOrderForLockRepository.findByCardId(cardId))
                 .thenReturn(Optional.of(order));
 
         Exception ex = assertThrowsExactly(UniquenessViolationException.class,
-                () -> orderForLockService.createOrderForLok(createOrderForLockRequest));
-        assertEquals("Запрос на блокировку карты с ID: %s уже был создан".formatted(cardId), ex.getMessage());
+                () -> orderForLockService.createOrderForLock(createOrderForLockRequest));
+        assertEquals("Запрос на блокировку карты отклонен, запрос уже был создан", ex.getMessage());
 
         verify(mockCardRepository)
-                .findById(eq(cardId));
+                .findByIdWithUser(eq(cardId));
         verify(mockOrderForLockRepository)
                 .findByCardId(eq(cardId));
         verify(mockOrderForLockRepository, never())
@@ -83,40 +108,18 @@ class OrderForLockServiceImplTest {
     }
 
     @Test
-    void createOrderForLok_cardIsNotActive_expect_bankCardsException() {
-        when(mockCardRepository.findById(eq(cardId)))
-                .thenReturn(Optional.of(card));
-        when(mockOrderForLockRepository.findByCardId(cardId))
-                .thenReturn(Optional.empty());
-        card.setStatus(CardStatus.LOCKED);
-
-        Exception ex = assertThrowsExactly(BankCardsException.class,
-                () -> orderForLockService.createOrderForLok(createOrderForLockRequest));
-        assertEquals("Запрос на блокировку карты с ID: %s отклонен, карта уже не активна".formatted(cardId),
-                ex.getMessage());
-
-        verify(mockCardRepository)
-                .findById(eq(cardId));
-        verify(mockOrderForLockRepository)
-                .findByCardId(eq(cardId));
-        verify(mockOrderForLockRepository, never())
-                .save(any(OrderForLock.class));
-    }
-
-    @Test
-    void createOrderForLok_NotErrors_expect_Success() {
-        card.setStatus(CardStatus.ACTIVE);
-        when(mockCardRepository.findById(eq(cardId)))
+    void createOrderForLock_NotErrors_expect_Success() {
+        when(mockCardRepository.findByIdWithUser(eq(cardId)))
                 .thenReturn(Optional.of(card));
         when(mockOrderForLockRepository.findByCardId(cardId))
                 .thenReturn(Optional.empty());
         when(mockOrderForLockRepository.save(any(OrderForLock.class)))
                 .thenReturn(new OrderForLock(id, card, OrderForLockStatus.PENDING));
 
-        orderForLockService.createOrderForLok(createOrderForLockRequest);
+        orderForLockService.createOrderForLock(createOrderForLockRequest);
 
         verify(mockCardRepository)
-                .findById(eq(cardId));
+                .findByIdWithUser(eq(cardId));
         verify(mockOrderForLockRepository)
                 .findByCardId(eq(cardId));
         verify(mockOrderForLockRepository)
@@ -131,7 +134,7 @@ class OrderForLockServiceImplTest {
 
         Exception ex = assertThrowsExactly(EntityNotFoundException.class,
                 () -> orderForLockService.updateOrderForLock(id, updateOrderForLockRequest));
-        assertEquals("Запрос с ID: %s на блокировку карты не найден".formatted(id), ex.getMessage());
+        assertEquals("Запрос на блокировку карты не найден", ex.getMessage());
 
         verify(mockOrderForLockRepository)
                 .findById(eq(id));
@@ -147,7 +150,7 @@ class OrderForLockServiceImplTest {
 
         Exception ex = assertThrowsExactly(BankCardsException.class,
                 () -> orderForLockService.updateOrderForLock(id, updateOrderForLockRequest));
-        assertEquals("Действие отклонено, потому что запрос с ID: %s на блокировку карты уже исполнен".formatted(id),
+        assertEquals("Действие отклонено, потому что запрос на блокировку карты уже исполнен",
                 ex.getMessage());
 
         verify(mockOrderForLockRepository)

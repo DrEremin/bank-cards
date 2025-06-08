@@ -4,35 +4,36 @@ import com.example.bankcards.dto.auth.AuthenticationRequest;
 import com.example.bankcards.dto.auth.AuthenticationResponse;
 import com.example.bankcards.security.JWTProvider;
 import com.example.bankcards.service.AuthenticationService;
-import com.example.bankcards.util.property.JWTProperty;
+import com.example.bankcards.util.property.SecurityProperty;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AuthenticationProvider authenticationProvider;
-    private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
-    private final JWTProperty jwtProperty;
+    private final SecurityProperty securityProperty;
 
     @Override
     public AuthenticationResponse authenticateUser(AuthenticationRequest request) {
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
         authenticationProvider.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword())
         );
 
         String token = jwtProvider.generateToken(request.getUserName());
-
-        return AuthenticationResponse.builder()
+        AuthenticationResponse response = AuthenticationResponse.builder()
                 .token(token)
-                .expiresInMinutes(jwtProperty.getExpiresInMinutes().toString())
+                .expiresInMinutes(securityProperty.getJwtExpiresInMinutes().toString())
                 .tokenType("Bearer")
                 .build();
+        log.info("Аутентификация пользователя {} пройдена успешно", request.getUserName());
+
+        return response;
     }
 }

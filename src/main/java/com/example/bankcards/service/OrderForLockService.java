@@ -8,9 +8,9 @@ import com.example.bankcards.dto.orderforlock.UpdateOrderForLockRequest;
 import java.util.List;
 import java.util.UUID;
 
-public interface OrderForLockService {
+public interface OrderForLockService extends AuthorizedUserIdExtractor {
 
-    OrderForLockResponse createOrderForLok(CreateOrderForLockRequest request);
+    OrderForLockResponse createOrderForLock(CreateOrderForLockRequest request);
 
     OrderForLockResponse updateOrderForLock(UUID id, UpdateOrderForLockRequest request);
 

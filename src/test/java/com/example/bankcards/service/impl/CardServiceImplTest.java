@@ -9,10 +9,8 @@ import com.example.bankcards.exception.BankCardsException;
 import com.example.bankcards.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,27 +23,12 @@ class CardServiceImplTest extends AbstractTest {
     private final UUID cardId = UUID.randomUUID();
     private final String cardNumber = "1234567891234567";
 
-    private final User user = User.builder()
-            .id(UUID.randomUUID())
-            .userName("Test")
-            .roles(Set.of(new Role(UUID.randomUUID(), RoleName.ROLE_USER)))
-            .build();
-
     private final CreateCardRequest createCardRequest = CreateCardRequest.builder()
             .ownerId(user.getId().toString())
             .build();
 
     private final UpdateCardRequest updateCardRequest = UpdateCardRequest.builder()
             .newStatus(CardStatus.ACTIVE.name())
-            .build();
-
-    private final Card card = Card.builder()
-            .id(cardId)
-            .encodedNumber("1234567891234567")
-            .owner(user)
-            .status(CardStatus.ACTIVE)
-            .balance(new BigDecimal("0.00"))
-            .expiredTime(LocalDateTime.now().plusYears(2))
             .build();
 
     @Test
@@ -161,7 +144,7 @@ class CardServiceImplTest extends AbstractTest {
 
         Exception ex = assertThrowsExactly(EntityNotFoundException.class,
                 () -> cardService.updateCard(cardId, updateCardRequest));
-        assertEquals("Карта с ID: %s не найдена".formatted(cardId), ex.getMessage());
+        assertEquals("Карта не найдена", ex.getMessage());
 
         verify(mockCardRepository)
                 .findById(eq(cardId));
@@ -212,8 +195,9 @@ class CardServiceImplTest extends AbstractTest {
 
         Exception ex = assertThrowsExactly(BankCardsException.class,
                 () -> cardService.updateCard(cardId, updateCardRequest));
-        assertEquals("Срок действия карты не может быть больше %d месяцев".formatted(mockValidPeriodProperty.getMaxMonths()),
-                ex.getMessage());
+        assertEquals("Срок действия карты не может быть больше %d месяцев".formatted(
+                mockValidPeriodProperty.getMaxMonths()), ex.getMessage()
+        );
 
         verify(mockCardRepository)
                 .findById(eq(cardId));

@@ -1,5 +1,6 @@
 package com.example.bankcards.service.impl;
 
+import com.example.bankcards.AbstractTest;
 import com.example.bankcards.dto.user.CreateUserRequest;
 import com.example.bankcards.dto.user.RoleNameRequest;
 import com.example.bankcards.dto.user.UpdateUserRequest;
@@ -9,16 +10,7 @@ import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.BankCardsException;
 import com.example.bankcards.exception.EntityNotFoundException;
 import com.example.bankcards.exception.UniquenessViolationException;
-import com.example.bankcards.repository.CardRepository;
-import com.example.bankcards.repository.RoleRepository;
-import com.example.bankcards.repository.UserRepository;
-import com.example.bankcards.repository.UserRoleRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,21 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
-
-    @Mock
-    private UserRepository mockUserRepository;
-    @Mock
-    private RoleRepository mockRoleRepository;
-    @Mock
-    private CardRepository mockCardRepository;
-    @Mock
-    private UserRoleRepository mockUserRoleRepository;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @InjectMocks
-    private UserServiceImpl userService;
+class UserServiceImplTest extends AbstractTest {
 
     private final UUID id = UUID.randomUUID();
     private final String password = "123";
@@ -76,7 +54,7 @@ class UserServiceImplTest {
 
         Exception ex = assertThrowsExactly(UniquenessViolationException.class,
                 () -> userService.createUser(createUserRequest));
-        assertEquals("Пользователь с именем %s не найден".formatted(userName), ex.getMessage());
+        assertEquals("Операция отклонена, пользователь с именем Test уже существует", ex.getMessage());
     }
 
     @Test
@@ -87,14 +65,14 @@ class UserServiceImplTest {
                 .thenReturn(roles);
         when(mockUserRepository.save(any(User.class)))
                 .thenReturn(new User(UUID.randomUUID(), userName, createUserRequest.getPassword(), roles, null));
-        when(passwordEncoder.encode(anyString()))
+        when(mockPasswordEncoder.encode(anyString()))
                 .thenReturn("test password");
 
         userService.createUser(createUserRequest);
 
         verify(mockRoleRepository)
                 .findByRoleNames(eq(List.of(RoleName.ROLE_USER)));
-        verify(passwordEncoder)
+        verify(mockPasswordEncoder)
                 .encode(anyString());
         verify(mockUserRepository)
                 .save(any(User.class));
@@ -142,7 +120,7 @@ class UserServiceImplTest {
 
         Exception ex = assertThrowsExactly(EntityNotFoundException.class,
                 () -> userService.updateUser(userId, updateUserRequest));
-        assertEquals("Пользователь с ID: %s не найден".formatted(userId), ex.getMessage());
+        assertEquals("Операция отклонена, пользователь не найден", ex.getMessage());
 
         verify(mockUserRepository)
                 .findByIdWithRoles(eq(userId));
@@ -159,7 +137,7 @@ class UserServiceImplTest {
 
         Exception ex = assertThrowsExactly(BankCardsException.class,
                 () -> userService.updateUser(userId, updateUserRequest));
-        assertEquals("Нет списка для обновления ролей пользователя с ID: %s".formatted(userId), ex.getMessage());
+        assertEquals("Операция отклонена. Нет списка для обновления ролей пользователя", ex.getMessage());
 
         verify(mockUserRepository)
                 .findByIdWithRoles(eq(userId));

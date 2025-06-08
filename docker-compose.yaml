@@ -1,0 +1,33 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+
+services:
+  bank-cards-pg:
+    image: postgres:latest
+    env_file:
+      - .env
+    container_name: bc-pg
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  bank-cards-app:
+    depends_on:
+      - bank-cards-pg
+    build: .
+    env_file:
+      - .env
+    container_name: bc-app
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

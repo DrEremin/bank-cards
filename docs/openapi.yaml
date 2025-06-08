@@ -978,7 +978,7 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/CommonResponseBalanceResponse"
-  /api/v1/cards/user/{id}:
+  /api/v1/cards/user:
     get:
       tags:
       - API карт
@@ -999,12 +999,6 @@ paths:
           type: integer
           format: int32
           default: 0
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
       responses:
         "500":
           description: Internal Server Error

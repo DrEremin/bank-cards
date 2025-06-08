@@ -1,7 +1,6 @@
 package com.example.bankcards.service.impl;
 
 import com.example.bankcards.dto.card.*;
-import com.example.bankcards.dto.common.PageableRequest;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.RoleName;
@@ -16,6 +15,7 @@ import com.example.bankcards.util.mapper.CardResponseMapper;
 import com.example.bankcards.util.mapper.PageableMapper;
 import com.example.bankcards.util.property.ValidPeriodProperty;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +28,7 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.UUID;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
@@ -51,25 +51,30 @@ public class CardServiceImpl implements CardService {
         User owner = userRepository.findById(UUID.fromString(ownerId))
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь с ID: %s не найден".formatted(ownerId)));
 
-        boolean isOwnerHavaUserRole = owner.getRoles().stream()
+        boolean isOwnerHaveRoleUser = owner.getRoles().stream()
                 .map(r -> r.getRoleName().name())
                 .anyMatch(r -> r.equals(RoleName.ROLE_USER.name()));
 
-        if (!isOwnerHavaUserRole) {
+        if (!isOwnerHaveRoleUser) {
             throw new BankCardsException("Ошибка при создании карты. Пользователь %s не является USER"
                     .formatted(owner.getUserName()));
         }
 
         Card card = cardRepository.save(buildCard(owner, expiredTime));
+        CardResponse response = CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
+        log.info("Операция создания карты для пользователя с ID: {} выполнена успешно пользователем с ID: {}",
+                ownerId,
+                getAuthorizedUserId()
+        );
 
-        return CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
+        return response;
     }
 
     @Override
     @Transactional
     public CardResponse updateCard(UUID id, UpdateCardRequest request) {
         Card card = cardRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Карта с ID: %s не найдена".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Карта не найдена"));
         ValidThruRequest newValidThru = request.getNewValidThru();
 
         if (newValidThru != null) {
@@ -82,8 +87,13 @@ public class CardServiceImpl implements CardService {
         }
 
         card = cardRepository.save(card);
+        CardResponse response = CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
+        log.info("Операция обновления карты c ID {} выполнена успешно пользователем с ID {}",
+                card.getId(),
+                getAuthorizedUserId()
+        );
 
-        return CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
+        return response;
     }
 
     @Override
@@ -93,19 +103,26 @@ public class CardServiceImpl implements CardService {
                 .ifPresent(card -> {
                     orderForLockRepository.deleteByCardId(cardId);
                     cardRepository.deleteById(cardId);
+                    log.info("Операция удаления карты с ID: {} выполена успешно пользователем с ID: {}",
+                            card.getId(),
+                            getAuthorizedUserId()
+                    );
                 });
     }
 
-    public List<CardResponse> findAllByUserId(UUID userId, Pageable pageable) {
-        return cardRepository.findAllByUserId(userId, pageable).stream()
+    public List<CardResponse> findAllByUserId(Pageable pageable) {
+        UUID userId = getAuthorizedUserId();
+        List<CardResponse> responseList = cardRepository.findAllByUserId(userId, pageable).stream()
                 .map(card -> CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber())))
                 .toList();
+        log.info("Запрос на получение всех карт пользователя с ID: {} выполнен успешно", userId);
+
+        return responseList;
     }
 
     @Override
     public List<CardResponse> findByFilter(FilterCardRequest request) {
-        PageableRequest page = request.getPage();
-        Pageable pageable = PageableMapper.mapPageable(page);
+        Pageable pageable = PageableMapper.mapPageable(request.getPage());
         UUID ownerId = null;
         List<CardStatus> cardStatuses = null;
 
@@ -119,30 +136,44 @@ public class CardServiceImpl implements CardService {
                     .toList();
         }
 
-        return cardRepository.findByFilter(
+        List<CardResponse> responseList = cardRepository.findByFilter(
                         ownerId,
                         request.getCreateTimeFrom(),
                         request.getCreateTimeTo(),
                         request.getExpiredTimeForm(),
                         request.getExpiredTimeTo(),
                         cardStatuses,
-                        pageable).stream()
+                        pageable)
+                .stream()
                 .map(card -> CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber())))
                 .toList();
+        log.info("Запрос на получение списка карт выполнен успешно пользователем с ID: {}", getAuthorizedUserId());
+
+        return responseList;
     }
 
     public CardResponse findById(UUID id) {
         Card card = cardRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Карта с ID: %s не найдена".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Карта не найдена"));
+        CardResponse response = CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
+        log.info("Запрос на получение карты с ID {} для пользователя с ID {} выполнен успешно",
+                card.getId(),
+                getAuthorizedUserId()
+        );
 
-        return CardResponseMapper.fromCard(card, basicTextEncryptor.decrypt(card.getEncodedNumber()));
+        return response;
     }
 
     public BalanceResponse getBalanceById(UUID cardId) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new EntityNotFoundException("Карта с ID: %s не найдена".formatted(cardId)));
+                .orElseThrow(() -> new EntityNotFoundException("Карта не найдена"));
+        BalanceResponse response = new BalanceResponse(card.getBalance().toString());
+        log.info("Запрос на получение баланса карты с ID {} для пользователя с ID {} выполнен успешно",
+                card.getId(),
+                getAuthorizedUserId()
+        );
 
-        return new BalanceResponse(card.getBalance().toString());
+        return response;
     }
 
     private LocalDateTime createExpiredTime(Integer year, Integer month) {

@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.bankcards.util.property.JWTProperty;
+import com.example.bankcards.util.property.SecurityProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +16,12 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JWTProvider {
 
-    private final JWTProperty jwtProperty;
+    private final SecurityProperty securityProperty;
 
     public String generateToken(String userName) {
-        Date expirationDate = Date.from(ZonedDateTime.now().plusMinutes(jwtProperty.getExpiresInMinutes()).toInstant());
+        Date expirationDate = Date.from(ZonedDateTime.now()
+                .plusMinutes(securityProperty.getJwtExpiresInMinutes()).toInstant()
+        );
 
         return JWT.create()
                 .withSubject("User info")
@@ -27,11 +29,11 @@ public class JWTProvider {
                 .withIssuedAt(new Date())
                 .withIssuer("back-cards-app")
                 .withExpiresAt(expirationDate)
-                .sign(Algorithm.HMAC256(jwtProperty.getSecret()));
+                .sign(Algorithm.HMAC256(securityProperty.getJwtSecret()));
     }
 
     public String validateTokenAndRetrieveClaim(String token) throws JWTVerificationException {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(jwtProperty.getSecret()))
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(securityProperty.getJwtSecret()))
                 .withSubject("User info")
                 .withIssuer("back-cards-app")
                 .build();

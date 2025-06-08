@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://bank-cards-pg:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+bank-cards:
+  security:
+    jwt-secret: ${JWT_SECRET}
+    text-encryptor-password: ${TEXT_ENCRYPTOR_PASSWORD}
+    first-admin-password: ${FIRST_ADMIN_PASSWORD}

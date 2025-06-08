@@ -1,9 +1,8 @@
-package com.example.bankcards.service.impl;
+package com.example.bankcards.security;
 
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.EntityNotFoundException;
 import com.example.bankcards.repository.UserRepository;
-import com.example.bankcards.security.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class UserInfoService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

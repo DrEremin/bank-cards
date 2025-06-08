@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.UUID;
 
-public interface CardService {
+public interface CardService extends AuthorizedUserIdExtractor {
 
     CardResponse createCard(CreateCardRequest request);
 
@@ -16,7 +16,7 @@ public interface CardService {
 
     CardResponse findById(UUID cardId);
 
-    List<CardResponse> findAllByUserId(UUID userId, Pageable pageable);
+    List<CardResponse> findAllByUserId(Pageable pageable);
 
     List<CardResponse> findByFilter(FilterCardRequest request);
 
