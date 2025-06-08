@@ -19,7 +19,6 @@ public class User extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     /**
      * Ник пользователя
      */

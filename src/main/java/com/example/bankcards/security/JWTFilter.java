@@ -1,7 +1,6 @@
 package com.example.bankcards.security;
 
 import com.auth0.jwt.exceptions.*;
-import com.example.bankcards.service.impl.UserInfoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,14 +40,17 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private Optional<String> getTokenFromRequest(HttpServletRequest request) {
         String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
+
         if (StringUtils.isNotBlank(bearer) && bearer.startsWith(BEARER)) {
             return Optional.of(bearer.substring(7));
         }
+
         return Optional.empty();
     }
 
     private Optional<Authentication> validateToken(String token) {
         UsernamePasswordAuthenticationToken auth = null;
+
         try {
             String userName = jwtProvider.validateTokenAndRetrieveClaim(token);
             UserDetails userDetails = userInfoService.loadUserByUsername(userName);
@@ -64,6 +66,7 @@ public class JWTFilter extends OncePerRequestFilter {
         } catch (InvalidClaimException e) {
             log.warn("Ошибка, проверка данных подлинности пользователя не пройдена");
         }
+
         return Optional.ofNullable(auth);
     }
 }

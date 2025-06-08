@@ -28,6 +28,17 @@ bank-cards:
   valid-period:
     min-months: 1
     max-months: 60
+  security:
+    jwt-expires-in-minutes: 120
+    cors-urls:
+      - "http://localhost:8080"
+    cors-methods:
+      - "GET"
+      - "POST"
+      - "PATCH"
+      - "DELETE"
+    cors-headers:
+      - "*"
 
 springdoc:
   swagger-ui:

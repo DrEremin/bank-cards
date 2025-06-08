@@ -66,16 +66,15 @@ public class CardController {
                 .build();
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/user")
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Вывести список всех карт пользователя. Доступ: USER")
     public CommonResponse<List<CardResponse>> findAllByUser(
             @RequestParam(value = "size", defaultValue = "10") @Positive Integer size,
-            @RequestParam(value = "page", defaultValue = "0") @Positive Integer page,
-            @PathVariable("id") UUID userId) {
+            @RequestParam(value = "page", defaultValue = "0") @Positive Integer page) {
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createTime")));
-        List<CardResponse> responses = cardService.findAllByUserId(userId, pageable);
+        List<CardResponse> responses = cardService.findAllByUserId(pageable);
 
         return CommonResponse.<List<CardResponse>>builder()
                 .id(UUID.randomUUID())

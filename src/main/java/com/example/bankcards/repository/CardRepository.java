@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CardRepository extends JpaRepository<Card, UUID> {
@@ -46,4 +47,12 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
         WHERE (:ownerId IS NOT NULL AND card.owner.id = :ownerId)
         """)
     List<Card> findAllByUserId(@Param("ownerId") UUID ownerId, Pageable pageable);
+
+    @Query("""
+        FROM Card c
+        JOIN FETCH c.owner
+        WHERE :id IS NOT NULL AND c.id = :id
+        """
+    )
+    Optional<Card> findByIdWithUser(@Param("id") UUID id);
 }

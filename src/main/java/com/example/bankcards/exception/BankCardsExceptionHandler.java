@@ -2,8 +2,11 @@ package com.example.bankcards.exception;
 
 import com.example.bankcards.dto.common.CommonResponse;
 import com.example.bankcards.dto.common.ValidationError;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -80,6 +84,25 @@ public class BankCardsExceptionHandler {
                 .id(UUID.randomUUID())
                 .errorMessage("Ошибка валидации: " + e.getMessage())
                 .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public CommonResponse<?> handleInvalidFormatException(HttpMessageNotReadableException e) {
+        if (e.getCause() instanceof InvalidFormatException ife) {
+            String path = ife.getPath().stream()
+                    .map(JsonMappingException.Reference::getFieldName)
+                    .collect(Collectors.joining("."));
+            String errMessage = "Ошибка валидации, указан некорректный формат поля: " + path;
+            log.error(errMessage, e);
+
+            return CommonResponse.builder()
+                    .id(UUID.randomUUID())
+                    .errorMessage(errMessage)
+                    .build();
+        }
+
+        return handleException(e);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

@@ -32,7 +32,7 @@ public class OrderForLockController {
     @Operation(summary = "Создать запрос на блокировку карты. Доступ: USER")
     public CommonResponse<OrderForLockResponse> createOrderForLock(
             @RequestBody @Valid CommonRequest<CreateOrderForLockRequest> request) {
-        OrderForLockResponse response = orderForLockService.createOrderForLok(request.getBody());
+        OrderForLockResponse response = orderForLockService.createOrderForLock(request.getBody());
 
         return CommonResponse.<OrderForLockResponse>builder()
                 .id(UUID.randomUUID())
