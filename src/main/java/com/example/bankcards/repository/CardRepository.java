@@ -52,7 +52,16 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
         FROM Card c
         JOIN FETCH c.owner
         WHERE :id IS NOT NULL AND c.id = :id
-        """
-    )
+        """)
     Optional<Card> findByIdWithUser(@Param("id") UUID id);
+
+    @Query("""
+        UPDATE Card card
+        SET card.status = :newStatus
+        WHERE (cast(:expiredTime AS DATE) IS NOT NULL AND card.expiredTime <= :expiredTime)
+            AND (:newStatus IS NOT NULL AND card.status != :newStatus)
+        """)
+    @Modifying
+    Integer updateCardsStatusLessThanExpiredTime(@Param("expiredTime") LocalDateTime expiredTime,
+                                                 @Param("newStatus") CardStatus newStatus);
 }

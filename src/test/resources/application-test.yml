@@ -1,0 +1,4 @@
+bank-cards:
+  scheduler:
+    expired-cards-update-status:
+      cron: "-"
