@@ -21,4 +21,6 @@ public interface CardService extends AuthorizedUserIdExtractor {
     List<CardResponse> findByFilter(FilterCardRequest request);
 
     BalanceResponse getBalanceById(UUID id);
+
+    Integer updateExpiredCardsStatus();
 }

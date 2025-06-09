@@ -176,6 +176,12 @@ public class CardServiceImpl implements CardService {
         return response;
     }
 
+    @Transactional
+    public Integer updateExpiredCardsStatus() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        return cardRepository.updateCardsStatusLessThanExpiredTime(currentTime, CardStatus.EXPIRED);
+    }
+
     private LocalDateTime createExpiredTime(Integer year, Integer month) {
         YearMonth expiredYearMonth = YearMonth.of(year, month);
         YearMonth currentYearMonth = YearMonth.now();

@@ -39,6 +39,9 @@ bank-cards:
       - "DELETE"
     cors-headers:
       - "*"
+  scheduler:
+    expired-cards-update-status:
+      cron: "1 0 0 1 * *"
 
 springdoc:
   swagger-ui:
